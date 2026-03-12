@@ -23,7 +23,8 @@ import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
 const config = defineConfig({
-  site: 'https://spectre.lou.gg',
+  site: 'https://ekerney.github.io',
+  base: '/location-visualization',
   output: 'static',
   integrations: [
     expressiveCode({
