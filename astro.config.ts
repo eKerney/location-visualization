@@ -1,13 +1,12 @@
+import { defineConfig } from "astro/config";
 import { loadEnv } from "vite";
-import { defineConfig } from 'astro/config';
 
-import expressiveCode from 'astro-expressive-code';
-import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
-import spectre from './package/src';
+import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
+import expressiveCode from "astro-expressive-code";
+import spectre from "./package/src";
 
-import node from '@astrojs/node';
-import { spectreDark } from './src/ec-theme';
+import { spectreDark } from "./src/ec-theme";
 
 // const {
 //   GISCUS_REPO,
@@ -23,47 +22,43 @@ import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
 const config = defineConfig({
-  site: 'https://ekerney.github.io',
-  base: '/location-visualization',
-  output: 'static',
-  integrations: [
-    expressiveCode({
-      themes: [spectreDark],
-    }),
-    mdx(),
-    sitemap(),
-    spectre({
-      name: 'Location Visualization',
-      openGraph: {
-        home: {
-          title: 'Location Visualization',
-          description: 'Location Technology & Geospatial Discussions'
-        },
-        blog: {
-          title: 'Blog',
-          description: 'Location Technology & Geospatial Discussions'
-        },
-        projects: {
-          title: 'Projects'
-        },
-
-      },
-      // giscus: {
-      //   repository: GISCUS_REPO,
-      //   repositoryId: GISCUS_REPO_ID,
-      //   category: GISCUS_CATEGORY,
-      //   categoryId: GISCUS_CATEGORY_ID,
-      //   mapping: GISCUS_MAPPING as any,
-      //   strict: GISCUS_STRICT === "true",
-      //   reactionsEnabled: GISCUS_REACTIONS_ENABLED === "true",
-      //   emitMetadata: GISCUS_EMIT_METADATA === "true",
-      //   lang: GISCUS_LANG,
-      // }
-    })
-  ],
-  adapter: node({
-    mode: 'standalone'
-  })
+	site: "https://ekerney.github.io",
+	base: "/location-visualization",
+	output: "static",
+	integrations: [
+		expressiveCode({
+			themes: [spectreDark],
+		}),
+		mdx(),
+		sitemap(),
+		spectre({
+			name: "Location Visualization",
+			openGraph: {
+				home: {
+					title: "Location Visualization",
+					description: "Location Technology & Geospatial Discussions",
+				},
+				blog: {
+					title: "Blog",
+					description: "Location Technology & Geospatial Discussions",
+				},
+				projects: {
+					title: "Projects",
+				},
+			},
+			// giscus: {
+			//   repository: GISCUS_REPO,
+			//   repositoryId: GISCUS_REPO_ID,
+			//   category: GISCUS_CATEGORY,
+			//   categoryId: GISCUS_CATEGORY_ID,
+			//   mapping: GISCUS_MAPPING as any,
+			//   strict: GISCUS_STRICT === "true",
+			//   reactionsEnabled: GISCUS_REACTIONS_ENABLED === "true",
+			//   emitMetadata: GISCUS_EMIT_METADATA === "true",
+			//   lang: GISCUS_LANG,
+			// }
+		}),
+	],
 });
 
 export default config;
