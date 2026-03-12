@@ -6,6 +6,24 @@
       "name": "github"
     },
     "text": "GitHub",
-    "link": "https://github.com/louisescher/spectre"
+    "link": "https://github.com/eKerney"
+  },
+  {
+    "id": 2,
+    "icon": {
+      "type": "lucide",
+      "name": "twitter"
+    },
+    "text": "Twitter",
+    "link": "https://twitter.com/locationartist"
+  },
+  {
+    "id": 3,
+    "icon": {
+      "type": "lucide",
+      "name": "linkedin"
+    },
+    "text": "LinkedIn",
+    "link": "https://www.linkedin.com/in/eric-kerney/"
   }
 ]

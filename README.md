@@ -1,3 +1,7 @@
+
+### Location Visualization
+New Astro based project with Spectre theme for Geospatial and AI inspired tech articles    
+
 ![Spectre, a terminal-inspired theme for Astro.](./images/README.png)
 
 Spectre is a terminal-inspired theme for Astro, built using TypeScript and Astro.

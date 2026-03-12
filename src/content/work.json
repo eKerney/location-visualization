@@ -1,9 +1,16 @@
 [
   {
+    "id": 2,
+    "duration": "2021 - 2024",
+    "company": "Airspace Link Inc.",
+    "title": "Geospatial Developer",
+    "description": "Building low-altitude digital infrastructure to enable safe integration of drones into the national airspace at scale"
+  },
+  {
     "id": 1,
-    "duration": "2024 - present",
-    "company": "Astro Community",
-    "title": "Astro Theme",
-    "description": "Existing as an Astro theme for anyone to use."
+    "duration": "2025 - present",
+    "company": "Blue Raster",
+    "title": "Senior Application Developer",
+    "description": "Intelligent web technologies and mapping solutions for global clients"
   }
 ]
