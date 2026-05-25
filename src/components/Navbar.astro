@@ -2,13 +2,18 @@
 import Icon from "./Icon.astro";
 import { name } from 'spectre:globals';
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const path = Astro.url.pathname;
 ---
-<nav>
-  <a class="site-title" href="/">{name}</a>
+<nav data-base={base}>
+  <a class="site-title" href={`${base}/`}>{name}</a>
   <ul>
     <li>
-      <a href="/blog" class:list={{ active: path.startsWith('/blog') }}>Blog</a>
+      <a href={`${base}/blog`} class:list={{ active: path.startsWith(`${base}/blog`) }}>Blog</a>
+    </li>
+    <li class="nav-separator">/</li>
+    <li>
+      <a href={`${base}/projects`} class:list={{ active: path.startsWith(`${base}/projects`) }}>Projects</a>
     </li>
     <li class="nav-separator">/</li>
     <li>
@@ -79,7 +84,9 @@ const path = Astro.url.pathname;
     // initialize pagefind on first focus
     if (!pagefindInitialized) {
       try {
-        window.pagefind = await import("/pagefind/pagefind.js");
+        const navEl = document.querySelector('nav');
+        const pagefindUrl = navEl?.getAttribute('data-base') + '/pagefind/pagefind.js';
+        window.pagefind = await import(pagefindUrl);
         await window.pagefind.init();
         pagefindInitialized = true;
       } catch (error) {

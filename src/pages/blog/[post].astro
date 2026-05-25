@@ -43,6 +43,7 @@ export const getStaticPaths = (async () => {
   return posts.map((post) => ({ params: { post: post.id }, props: { post } }));
 }) satisfies GetStaticPaths;
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const { Content, headings } = await render(post);
 ---
 
@@ -89,7 +90,7 @@ const { Content, headings } = await render(post);
       </div>
       <Content />
       <hr class="end-of-article" />
-      <a href="/blog" class="block-link" data-pagefind-ignore>← Back to blog</a>
+      <a href={`${base}/blog`} class="block-link" data-pagefind-ignore>← Back to blog</a>
     </Card>
     {giscus && (
       <Card>

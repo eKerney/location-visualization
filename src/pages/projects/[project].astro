@@ -25,6 +25,7 @@ export const getStaticPaths = (async () => {
 
 console.log(project.data.info);
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const { Content } = await render(project);
 ---
 <Layout
@@ -68,7 +69,7 @@ const { Content } = await render(project);
       </div>
       <Content />
       <hr class="end-of-article" />
-      <a href="/projects" class="block-link" data-pagefind-ignore>← Back to projects</a>
+      <a href={`${base}/projects`} class="block-link" data-pagefind-ignore>← Back to projects</a>
     </Card>
   </article>
 </Layout>
