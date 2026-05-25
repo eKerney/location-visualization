@@ -1,0 +1,168 @@
+---
+title: "Upcoming Article Ideas — A Roadmap"
+description: "A collection of geospatial visualization topics I want to write about, from deck.gl and MapLibre integrations to H3 hexagonal indexing, Observable notebooks, drone airspace tech, and more."
+image: "../assets/globe_glow.png"
+createdAt: 05-25-2026
+draft: true
+tags:
+  - visualization
+  - geoData
+  - deckgl
+  - d3
+  - openSource
+---
+
+## What's on the workbench
+
+I've been collecting notes and project ideas faster than I can write them up. This post is a running roadmap of the articles I want to tackle — partly to keep myself accountable, and partly because someone might find the list useful as a reference of what's possible in the geospatial visualization space right now.
+
+None of these are promises. Some are half-finished experiments, some are topics I've presented at conferences, and some are just ideas I want to explore. If any of them catch your interest, let me know and I'll prioritize them.
+
+---
+
+## 1. Building a MapLibre + Deck.gl Integration
+
+**Repo:** [`vite-map-deck`](https://github.com/eKerney/vite-map-deck)
+
+MapLibre GL JS is fantastic for rendering vector tiles and basemaps. Deck.gl is fantastic for GPU-powered data visualization layers — scatterplots, hexagons, arcs, polygons, 3D terrain. Combining them gives you the best of both worlds: a proper basemap with deck.gl's rendering pipeline on top.
+
+I built `vite-map-deck` as a reference integration that wires MapLibre and deck.gl together with Vite. The tricky part is synchronizing the camera — MapLibre owns the viewport, and deck.gl needs to match it. There are a few approaches (the `MapLibreAdapter` from deck.gl, manual viewport sync, etc.) and I want to document the trade-offs.
+
+**What the article would cover:**
+- Setting up a Vite project with both MapLibre and deck.gl
+- The camera synchronization pattern
+-Layering deck.gl visualizations on top of MapLibre vector tiles
+- Performance considerations
+
+---
+
+## 2. H3 Hexagonal Indexing in Practice
+
+**Observable notebooks:** [hexagon data2](https://observablehq.com/@location-artistry/hexagon-data2), [hexagon dataViz](https://observablehq.com/@location-artistry/hexagondataviz)
+
+Uber's H3 library is one of the most useful tools in the geospatial toolbox. I've been using it in several projects — from the D3 globe visualization to a UAS emergency landing site identification app. The `polygonToCells` function alone unlocks a lot of analysis that would be tedious with raw GeoJSON.
+
+I have a couple of Observable notebooks exploring H3 for data visualization, and I'd like to consolidate that knowledge into a practical guide.
+
+**What the article would cover:**
+- When to use H3 vs raw geometries
+- Resolution selection and the trade-off between detail and performance
+- Hexagon aggregation patterns for point data
+- Visual styling: color scales, hex borders, labels
+- Combining H3 with deck.gl's `H3HexagonLayer` for fast rendering
+
+---
+
+## 3. Building an MCP Server for Esri's Living Atlas
+
+**Repo:** [`esri-mcp`](https://github.com/eKerney/esri-mcp)
+
+The Model Context Protocol (MCP) is an interesting emerging pattern for connecting LLMs to data sources. I built a Python MCP server that queries the Esri Living Atlas, specifically focused on water resources data — USGS gage stations, water quality monitoring, watershed boundaries.
+
+This lets you ask natural language questions about water data and get back structured geospatial results. It's a side project that combines my interests in hydrology, geospatial APIs, and tool-building.
+
+**What the article would cover:**
+- What MCP is and why it matters for geospatial data
+- The architecture of `esri-mcp`: how it connects to the Living Atlas
+- Example queries and results
+- Lessons learned about MCP server design
+
+---
+
+## 4. USGS Water Gage Data Visualization
+
+**Observable notebook:** [USGS Water Gage Data 2025](https://observablehq.com/@location-artistry/usgs-water-gage-data-2025)
+
+The USGS National Water Information System (NWIS) has decades of streamflow, stage, and water quality data. I've been exploring ways to visualize this data interactively — both timeseries charts and geospatial maps of gage networks. The Observable notebook I have is a starting point, but there's a lot more to explore with real-time data feeds and historical trend analysis.
+
+**What the article would cover:**
+- Accessing the USGS NWIS API
+- Visualizing gage locations on a map
+- Timeseries plots of stage and discharge
+- Animated historic flood events
+- Combining with precipitation data
+
+---
+
+## 5. 30DayMapChallenge Retrospective
+
+My contributions to the 2024 and 2025 editions of the #30DayMapChallenge were limited — I've been busy with other projects. But I want to do a proper retrospective on the challenge itself: what makes a good daily map, how to scope a project to one day, tools and data sources that work well, and lessons from the maps I did manage to create.
+
+**What the article would cover:**
+- My challenge workflow and tools
+- Favorite maps from the community
+- Post-mortem on what worked and what didn't
+- Tips for first-time participants
+
+---
+
+## 6. Drone Airspace Management and Geospatial Tech
+
+This is my day job at Airspace Link — building geospatial tools for UAS (drone) airspace management. The intersection of aviation, regulation, and geospatial technology is fascinating and not well documented from a technical perspective. Topics like dynamic geofencing, airspace risk assessment, real-time UAS tracking, and integration with FAA data services.
+
+I can't share proprietary details, but there are general geospatial patterns in this space worth discussing.
+
+**What the article would cover:**
+- Geospatial challenges in UAS traffic management
+- Real-time vs batch spatial analysis
+- Airspace polygon operations (union, difference, intersection)
+- Altitude-aware geospatial queries
+- Data standards in the UAS industry
+
+---
+
+## 7. ArcGIS SDK for JavaScript: SEMCOG's Then and Now Map
+
+Presented at IMAGIN 2024. I built a side-by-side historic map viewer for SEMCOG (Southeast Michigan Council of Governments) using the ArcGIS SDK for JavaScript. The concept is simple — two maps, different time periods, synchronized navigation — but implementation details matter: tile layer caching, attribution, responsive layout, and performance.
+
+**What the article would cover:**
+- ArcGIS SDK for JavaScript basics
+- Side-by-side map synchronization
+- Historic tile layer sources
+- Responsive design for map applications
+- Lessons from the IMAGIN 2024 presentation
+
+---
+
+## 8. DuckDB for Geospatial Analysis
+
+DuckDB has become my go-to tool for geospatial data exploration on the command line. Its spatial extension makes it trivial to load GeoJSON, Parquet, Shapefiles, and run spatial SQL queries without spinning up a PostGIS instance. I've been using it for data prep before visualization.
+
+**What the article would cover:**
+- Installing DuckDB with the spatial extension
+- Loading common geospatial formats
+- Spatial SQL patterns: joins, buffering, containment
+- Exporting results for visualization
+- Performance compared to PostGIS and GeoPandas
+
+---
+
+## 9. Geospatial Development Workflow with Observable Notebooks
+
+Observable has become an underrated part of my geospatial toolkit. It's great for rapid prototyping of visualizations, sharing interactive maps, and teaching concepts. Over the years I've published 18 notebooks covering everything from COVID data to 3D buildings to hexagon visualizations.
+
+**What the article would cover:**
+- Why Observable for geospatial work
+- Importing and transforming geospatial data
+- Building interactive map components
+- Publishing and sharing notebooks
+- When to move from Observable to a production app
+
+---
+
+## 10. Esri Python API for ArcGIS Online Management
+
+Presented at IMAGIN 2024. Managing an ArcGIS Online organization programmatically with the Esri Python API — user management, content migration, automated publishing, and webhook-based workflows.
+
+**What the article would cover:**
+- Authentication and connecting to AGOL
+- Automating user and group management
+- Content lifecycle: publish, update, archive
+- Webhooks for real-time automation
+- CLI tools built on the Python API
+
+---
+
+That's the list for now. Some of these are close to publishable (the MapLibre + deck.gl piece, the H3 guide), others need more hands-on exploration first. I'll update this post as I make progress and add new ideas.
+
+If any of these resonate with you — or if there's a topic here you'd like to see sooner — let me know. Feedback helps me decide what to write next.

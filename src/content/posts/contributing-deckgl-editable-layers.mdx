@@ -1,0 +1,50 @@
+---
+title: "Contributing to deck.gl-community: Rewriting Editable Layers for Cartesian Coordinates"
+description: "A deep dive into my recent PR adding Cartesian coordinate support to deck.gl-community's editable-layers draw-polygon-mode, replacing Turf.js dependencies with pure geometric functions."
+image: "../assets/globe_glow.png"
+createdAt: 05-22-2026
+draft: false
+tags:
+  - deckgl
+  - openSource
+  - visualization
+  - contributions
+---
+
+## Giving back to the visgl ecosystem
+
+I've been spending time contributing to the visgl repos under the deck.gl-community project, specifically working on the editable-layers module. This is the library that provides interactive drawing and editing tools on top of deck.gl — think drawing polygons on a map, dragging vertices, creating holes, and all the geometric operations that go into a map editing workflow.
+
+My recent PR ([#641](https://github.com/visgl/deck.gl-community/pull/641)) rewrites portions of the draw-polygon editing mode to support Cartesian (non-geographic) coordinate systems, opening up the editing tools for use cases that don't involve map tiles or lat/lng coordinates.
+
+### The problem
+
+deck.gl's editable-layers module was built primarily for geographic use cases. It relied heavily on Turf.js for geometric operations like point-in-polygon tests, line intersection checks, and polygon containment. Turf.js assumes geographic (lat/lng) coordinates and uses spherical geometry under the hood. This works great when you're editing features on a map, but falls apart when your coordinates are just x, y values in a Cartesian plane.
+
+But deck.gl is increasingly used for non-geographic visualizations — think floor plans, CAD data, scatterplots, network graphs, and UI layouts — where coordinates are plain Cartesian values with no geographic meaning. In these contexts, calling Turf's spherical functions on Cartesian coordinates either produces wrong results or throws errors. The editable-layers module was effectively locked into geographic mode only.
+
+### What I changed
+
+The core of the PR is a set of pure geometric utility functions that implement the same operations Turf provides, but in Cartesian space using basic linear algebra:
+
+- **`orientation()`** — cross product for determining 2D orientation (clockwise / counterclockwise). This is the building block for most other operations.
+- **`segmentsIntersect()`** — checks if two line segments cross, using the orientation test to detect intersections without floating-point division.
+- **`polygonEdgesIntersect()`** — tests whether the edges of two polygons intersect each other, useful for overlap detection.
+- **`pointInPolygon()`** — classic ray-casting algorithm: cast a ray from the point and count how many polygon edges it crosses. Odd count means inside.
+- **`polygonWithinPolygon()`** — checks full containment of one polygon inside another, combining point-in-polygon for all vertices with edge intersection checks.
+
+These replace Turf's `lineIntersect` and `booleanWithin` when the editor is operating in Cartesian coordinate mode. The `validateAndCreateHole()` function — which runs every time a user tries to cut a hole in a polygon — now branches on whether we're in geographic or Cartesian space, using Turf when appropriate and the new geometric functions otherwise.
+
+### What I skipped
+
+I left out implementing Turf's `kinks` function (self-intersection detection). Detecting self-intersections in a single polygon requires checking every non-adjacent edge pair against every other, which is O(n²) in the vertex count and involves nuanced handling of shared vertices and collinear edges. It's another order of complexity entirely. For now, self-intersecting polygons in Cartesian mode will just behave unpredictably — a known limitation I'd like to address in a follow-up.
+
+### Testing
+
+I added comprehensive unit tests for all the new functions in the draw-polygon-mode test spec. The tests cover intersecting segments, non-intersecting segments, points inside polygons, points outside polygons, and polygon-within-polygon cases, both positive and negative. All tests use simple Cartesian coordinates so they're easy to reason about — no geodesic edge cases to worry about. The existing geographic-mode tests continue to pass unchanged.
+
+### The state of the PR
+
+The PR is currently open on the visgl/deck.gl-community repo. It adds roughly 220 lines across the draw-polygon-mode implementation file and its test spec. The response so far has been positive — the maintainers seem open to the approach of branching on coordinate system rather than trying to make Turf work in Cartesian space.
+
+This is a meaningful step toward making deck.gl's editing tools framework-agnostic and usable outside strictly geographic contexts. I'm hoping to continue working on this — there are more edit modes that could benefit from the same treatment, and I'd like to add that self-intersection detection eventually. The `ModifyMode` and `TranslateMode` would be natural next candidates since they also rely on geometric predicates that currently assume geographic coordinates.

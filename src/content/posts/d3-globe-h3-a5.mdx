@@ -1,0 +1,63 @@
+---
+title: "Building a 3D Globe with D3 Geo, H3 Hexagons, and A5 Pentagons"
+description: "Experimenting with d3-geo for 3D globe rendering, transforming Natural Earth polygons into H3 hexagons and A5 pentagons — no map library required."
+image: "../assets/globe_glow.png"
+createdAt: 04-20-2026
+draft: false
+tags:
+  - d3
+  - h3
+  - a5
+  - visualization
+  - geoData
+---
+
+## Expanding on a visualization experiment from last year
+
+I've been revisiting an idea I started playing with a while back — building a 3D globe using nothing but D3 geo. No map library, no basemap tiles, just GeoJSON data and SVG paths rendered directly onto a projection. What started as a quick curiosity turned into something much more interesting once I started layering in spatial indexes on top of the raw polygons.
+
+The core idea is simple: take Natural Earth land data, project it onto a globe with d3-geo, and then use that as a canvas to experiment with different ways of discretizing the surface. I wanted to see how far I could push D3 before needing to reach for a purpose-built map library.
+
+### D3 geo for full control
+
+D3 gives you complete control over rendering and user interaction. Here I'm pulling Natural Earth land polygons and rendering them as SVG paths on a 3D globe projection using `d3.geoOrthographic` or similar. Every mouse interaction — rotation, zoom, hover — is handled directly rather than delegated to a map SDK.
+
+The beauty of this approach is that you keep access to all the feature attributes. Every polygon retains its metadata, so you can do hover states, click interactions, and data-driven styling without fighting against a black-box renderer. For this experiment I wanted hover to highlight the country and show its name, which is trivially done when you control the SVG rendering pipeline yourself.
+
+### Hexagons with H3
+
+The next step was adding H3 hexagons. Uber's H3 library has a `polygonToCells` function that makes it straightforward to tile a country polygon with hexagons at a given resolution. You pass in a GeoJSON polygon and a resolution level, and it returns the set of H3 cell indices that intersect that polygon.
+
+The result is a recognizable country outline, but built from hexagons instead of raw GeoJSON paths. At lower resolutions the approximation is rough and chunky; at higher resolutions it converges toward the original shape. Toggling between the raw polygon view and the hexagon view makes the trade-off immediately visible. H3 handles the icosahedron projection internally, so cells near the poles distort in an interestingly different way than a naive plate carrée approach would produce.
+
+### Pentagons with A5
+
+This is where things got really interesting. Felix Palmer, creator of the A5 pentagon-based global spatial index and a deck.gl maintainer, suggested I try transforming the hexagons into A5 pentagons. A5 is built on pentagons rather than hexagons — a fundamentally different approach to tiling the sphere — and it doesn't yet have a built-in `polygonToCells` function. Felix has mentioned this is a major missing piece he'd like to add.
+
+Since A5 doesn't have `polygonToCells` yet, I rolled my own simplified version:
+
+1. Get centroids for all A5 cells at a given resolution by iterating over the A5 grid
+2. Use Turf.js `pointInPolygon` to check which pentagon centroids fall within each country boundary
+3. Mark those pentagons for rendering
+
+All calculations run live in a client-side React app. This approach works reasonably well for a proof of concept, but it's definitely a shortcut — a proper implementation would handle edge cases more robustly and likely be significantly faster. The main challenge I hit was losing cells around the anti-meridian, where Turf's point-in-polygon doesn't always agree with where you'd expect the polygon boundary to be when it crosses the date line.
+
+### Try it out
+
+You can interact with the globe here: [https://ekerney.github.io/d3geo-dggs/](https://ekerney.github.io/d3geo-dggs/)
+
+Repo: [https://github.com/eKerney/d3geo-dggs](https://github.com/eKerney/d3geo-dggs)
+
+The hover effect turned out particularly well — Felix even commented on it, which was a nice surprise. The app is built with React and TypeScript using Vite, and the globe rendering is all D3 SVG with some React state management for the UI controls.
+
+### What's next
+
+There's a lot I want to improve:
+
+- Better handling of anti-meridian edge cases where Turf's `pointInPolygon` disagrees with the visual polygon boundary
+- Smoother transitions between H3 and A5 views — maybe using a slider that interpolates between hexagon and pentagon resolutions
+- Adding more data layers on top of the hex/pentagon tiles, like population density or elevation tinting per cell
+- Performance optimization for higher H3 resolutions where the number of cells grows exponentially
+- A proper `polygonToCells` for A5 if Felix doesn't get to it first
+
+This is very much a work in progress, but the foundation is solid. D3 geo really is an incredible toolkit when you want full control over your map rendering, and combining it with discrete global grid systems opens up a lot of interesting visualization possibilities.
