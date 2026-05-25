@@ -12,6 +12,8 @@ import { getEntry } from 'astro:content';
 import { render } from 'astro:content';
 import { name, openGraph } from 'spectre:globals';
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 const [posts, projects, about, workExperience, quickInfo, socials] = await Promise.all([
 	getCollection('posts', (post) => post.data.draft !== true),
 	getCollection('projects'),
@@ -74,7 +76,7 @@ const { Content: About } = await render(about!);
 			</div>
 			<div class="content-container">
 				{posts.sort((a, b) => b.data.createdAt.getTime() - a.data.createdAt.getTime()).slice(0, 2).map((post) => (
-					<a href={`/blog/${post.id}`} class="post-container">
+					<a href={`${base}/blog/${post.id}`} class="post-container">
 						<div class="post-header">
 							<h3>{post.data.title}</h3>
 							<span class="post-date">{post.data.createdAt.toLocaleDateString()}</span>
@@ -91,7 +93,7 @@ const { Content: About } = await render(about!);
 			</div>
 			<div class="content-container">
 				{projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 2).map((project) => (
-					<a href={`/projects/${project.id}`} class="post-container">
+					<a href={`${base}/projects/${project.id}`} class="post-container">
 						<div class="post-header">
 							<h3>{project.data.title}</h3>
 							<span class="post-date">{project.data.date.toLocaleDateString()}</span>
