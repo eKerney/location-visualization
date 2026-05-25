@@ -1,168 +1,272 @@
 ---
-title: "Upcoming Article Ideas — A Roadmap"
-description: "A collection of geospatial visualization topics I want to write about, from deck.gl and MapLibre integrations to H3 hexagonal indexing, Observable notebooks, drone airspace tech, and more."
+title: "Upcoming Article Ideas — Grounded in Archived Tweets 2020–2026"
+description: "Twenty article ideas drawn from 232 archived tweets spanning Feb 2020 to May 2026 — organized by what I actually tweet about, build, and debug."
 image: "../assets/globe_glow.png"
 createdAt: 05-25-2026
-draft: true
+draft: false
 tags:
   - visualization
   - geoData
   - deckgl
   - d3
   - openSource
+  - contributions
+  - ai
+  - cli
 ---
 
-## What's on the workbench
+## What the archive says
 
-I've been collecting notes and project ideas faster than I can write them up. This post is a running roadmap of the articles I want to tackle — partly to keep myself accountable, and partly because someone might find the list useful as a reference of what's possible in the geospatial visualization space right now.
-
-None of these are promises. Some are half-finished experiments, some are topics I've presented at conferences, and some are just ideas I want to explore. If any of them catch your interest, let me know and I'll prioritize them.
-
----
-
-## 1. Building a MapLibre + Deck.gl Integration
-
-**Repo:** [`vite-map-deck`](https://github.com/eKerney/vite-map-deck)
-
-MapLibre GL JS is fantastic for rendering vector tiles and basemaps. Deck.gl is fantastic for GPU-powered data visualization layers — scatterplots, hexagons, arcs, polygons, 3D terrain. Combining them gives you the best of both worlds: a proper basemap with deck.gl's rendering pipeline on top.
-
-I built `vite-map-deck` as a reference integration that wires MapLibre and deck.gl together with Vite. The tricky part is synchronizing the camera — MapLibre owns the viewport, and deck.gl needs to match it. There are a few approaches (the `MapLibreAdapter` from deck.gl, manual viewport sync, etc.) and I want to document the trade-offs.
-
-**What the article would cover:**
-- Setting up a Vite project with both MapLibre and deck.gl
-- The camera synchronization pattern
--Layering deck.gl visualizations on top of MapLibre vector tiles
-- Performance considerations
+I archived 232 of my own tweets (2020–2026) via X's internal GraphQL API and analyzed topic frequency. The strongest signals: AI/LLM (46 mentions), data pipelines (40), Neovim (20), React (17), Rust (10), Observable notebooks (9), PostGIS (7), TypeScript (7), D3 (5), tmux (5), H3 (4), and MCP (3). These twenty ideas are organized by what I actually tweet about, not what I think I should write about.
 
 ---
 
-## 2. H3 Hexagonal Indexing in Practice
+## Terminal-First Geospatial Dev
 
-**Observable notebooks:** [hexagon data2](https://observablehq.com/@location-artistry/hexagon-data2), [hexagon dataViz](https://observablehq.com/@location-artistry/hexagondataviz)
+### 1. Neovim + PostGIS: A Terminal-First Geospatial Workflow
 
-Uber's H3 library is one of the most useful tools in the geospatial toolbox. I've been using it in several projects — from the D3 globe visualization to a UAS emergency landing site identification app. The `polygonToCells` function alone unlocks a lot of analysis that would be tedious with raw GeoJSON.
+**May 2026:** *"Really enjoying integrating #nvim with #postgres and #psql — nice CLI workflow — piping SQL from neovim > psql > output.txt — no plugins required!"*
 
-I have a couple of Observable notebooks exploring H3 for data visualization, and I'd like to consolidate that knowledge into a practical guide.
+Neovim is my most-tweeted dev tool (20 mentions across the archive). The PostGIS + psql CLI workflow is something I keep coming back to — writing SQL in neovim, piping it to psql, capturing output to a file for inspection. No ORM, no GUI, no Jupyter — just a terminal, a database, and named buffers.
 
-**What the article would cover:**
-- When to use H3 vs raw geometries
-- Resolution selection and the trade-off between detail and performance
-- Hexagon aggregation patterns for point data
-- Visual styling: color scales, hex borders, labels
-- Combining H3 with deck.gl's `H3HexagonLayer` for fast rendering
+- The nvim + psql feedback loop: write, pipe, inspect
+- Named buffers and terminal windows for SQL output
+- Why this beats pgAdmin, DBeaver, and DataGrip for exploration
+- Extending to spatial queries: ST_AsGeoJSON, ST_AsText, ogr2ogr pipes
 
----
+### 2. The TUI Geospatial Developer's Toolkit
 
-## 3. Building an MCP Server for Esri's Living Atlas
+**Multiple tweets 2025–2026:** *"Finally switched out the 's' keymap from mini.nvim for surround... much better"*, *"That feeling of a clean tmux resurrect after reboot... PRICELESS"*, *"email going full terminal mode #matcha"*, *"At long last email & music in a terminal TUI!"*
 
-**Repo:** [`esri-mcp`](https://github.com/eKerney/esri-mcp)
+My terminal setup is a recurring topic — tmux resurrect, neovim keymap swaps, matcha for email, floating terminal panes for music. There's a coherent philosophy here about minimizing context switches. Worth documenting the full stack for other geospatial devs.
 
-The Model Context Protocol (MCP) is an interesting emerging pattern for connecting LLMs to data sources. I built a Python MCP server that queries the Esri Living Atlas, specifically focused on water resources data — USGS gage stations, water quality monitoring, watershed boundaries.
+- tmux session management for geospatial projects
+- neovim as a geospatial IDE (no LSP tricks, just terminal + db)
+- matcha, aerc, or similar terminal email
+- Floating terminal panes and window management
 
-This lets you ask natural language questions about water data and get back structured geospatial results. It's a side project that combines my interests in hydrology, geospatial APIs, and tool-building.
+### 3. WSL2 + Docker + PostGIS: Making Windows Work for Spatial Dev
 
-**What the article would cover:**
-- What MCP is and why it matters for geospatial data
-- The architecture of `esri-mcp`: how it connects to the Living Atlas
-- Example queries and results
-- Lessons learned about MCP server design
+**May 2026:** *"Windows isn't great for dev, even with WSL not the best blah blah etc... HOWEVER running this local Postgres/GIS docker image and connecting via python feels pretty nice!"*
 
----
+A pragmatic take on Windows geospatial development. Docker + PostGIS + Python works surprisingly well on WSL2. The ecosystem has matured enough that you can do serious spatial work without dual-booting or buying a Mac.
 
-## 4. USGS Water Gage Data Visualization
-
-**Observable notebook:** [USGS Water Gage Data 2025](https://observablehq.com/@location-artistry/usgs-water-gage-data-2025)
-
-The USGS National Water Information System (NWIS) has decades of streamflow, stage, and water quality data. I've been exploring ways to visualize this data interactively — both timeseries charts and geospatial maps of gage networks. The Observable notebook I have is a starting point, but there's a lot more to explore with real-time data feeds and historical trend analysis.
-
-**What the article would cover:**
-- Accessing the USGS NWIS API
-- Visualizing gage locations on a map
-- Timeseries plots of stage and discharge
-- Animated historic flood events
-- Combining with precipitation data
+- WSL2 + Docker Desktop setup for PostGIS
+- Connecting Python/psycopg2 via WSL's network bridge
+- Performance: file system, GPU passthrough, and database I/O
+- When it falls apart and what to do instead
 
 ---
 
-## 5. 30DayMapChallenge Retrospective
+## AI, LLMs & Agentic Tooling
 
-My contributions to the 2024 and 2025 editions of the #30DayMapChallenge were limited — I've been busy with other projects. But I want to do a proper retrospective on the challenge itself: what makes a good daily map, how to scope a project to one day, tools and data sources that work well, and lessons from the maps I did manage to create.
+### 4. opencode and the AI CLI Revolution
 
-**What the article would cover:**
-- My challenge workflow and tools
-- Favorite maps from the community
-- Post-mortem on what worked and what didn't
-- Tips for first-time participants
+**Mar 2026:** *"current VSCode release notes: 'We are starting to implement some of the features that @opencode does so well... Such as consistent session management!'"* **May 2026:** *"Brrr... brrr........ (sound of #opencode cranking away reading a lengthy file) SOoooo glad for free models!"*
 
----
+AI CLI tools — specifically opencode — have become a core part of my workflow. VSCode explicitly citing opencode as inspiration is a sign the paradigm is shifting. This article would be a practitioner's take on AI CLIs vs IDE copilots.
 
-## 6. Drone Airspace Management and Geospatial Tech
+- Why AI CLIs (opencode) beat IDE copilots for geospatial work
+- The free models ecosystem: running local LLMs for dev tasks
+- Session management and context window strategies
+- When AI code generation fails for spatial logic
 
-This is my day job at Airspace Link — building geospatial tools for UAS (drone) airspace management. The intersection of aviation, regulation, and geospatial technology is fascinating and not well documented from a technical perspective. Topics like dynamic geofencing, airspace risk assessment, real-time UAS tracking, and integration with FAA data services.
+### 5. Building a Geospatial MCP Server: Esri Living Atlas + LLMs
 
-I can't share proprietary details, but there are general geospatial patterns in this space worth discussing.
+**Sep 2025:** *"Spent my spare time this week creating an MCP server, vibe coding CLI style, first with Gemini and then with opencode via Grok FC1. It's very addicting/frustrating and you still need to read plenty of docs"* **Repo:** [`esri-mcp`](https://github.com/eKerney/esri-mcp)
 
-**What the article would cover:**
-- Geospatial challenges in UAS traffic management
-- Real-time vs batch spatial analysis
-- Airspace polygon operations (union, difference, intersection)
-- Altitude-aware geospatial queries
-- Data standards in the UAS industry
+The Model Context Protocol is the most interesting pattern I've encountered for connecting LLMs to geospatial data. My esri-mcp server queries the Esri Living Atlas for water resources data — USGS gage stations, water quality, watershed boundaries — and returns structured geospatial results. This space is very new and barely documented.
 
----
+- What MCP is and why it matters for GIS
+- Architecture of a geospatial MCP server
+- Connecting to the Esri Living Atlas API through MCP
+- Example queries: "find USGS gages near St Joseph River with recent floods"
+- Lessons from building with both Gemini and opencode
 
-## 7. ArcGIS SDK for JavaScript: SEMCOG's Then and Now Map
+### 6. MCP Context Bloat: When AI Has Too Much Context
 
-Presented at IMAGIN 2024. I built a side-by-side historic map viewer for SEMCOG (Southeast Michigan Council of Governments) using the ArcGIS SDK for JavaScript. The concept is simple — two maps, different time periods, synchronized navigation — but implementation details matter: tile layer caching, attribution, responsive layout, and performance.
+**Sep 2025:** *"Does this work to address #mcp context bloat in #gemini or any other AI tooling?"*
 
-**What the article would cover:**
-- ArcGIS SDK for JavaScript basics
-- Side-by-side map synchronization
-- Historic tile layer sources
-- Responsive design for map applications
-- Lessons from the IMAGIN 2024 presentation
+A short, focused article on a specific pain point: MCP servers that return too much data, blowing through context windows. Strategies for pagination, summarization, and structured output that keeps LLM conversation windows manageable.
 
----
+- How context windows fill up with geospatial results
+- Pagination patterns for MCP tool responses
+- Geospatial result summarization (GeoJSON → Markdown → summary)
+- Working with Gemini's context limits specifically
 
-## 8. DuckDB for Geospatial Analysis
+### 7. AI Vibe Code Anti-Patterns in Geospatial Apps
 
-DuckDB has become my go-to tool for geospatial data exploration on the command line. Its spatial extension makes it trivial to load GeoJSON, Parquet, Shapefiles, and run spatial SQL queries without spinning up a PostGIS instance. I've been using it for data prep before visualization.
+**Aug 2025:** *"Ever notice how AI vibe code always defaults to useEffect? #ai #vibecoding #react #antipattern"*
 
-**What the article would cover:**
-- Installing DuckDB with the spatial extension
-- Loading common geospatial formats
-- Spatial SQL patterns: joins, buffering, containment
-- Exporting results for visualization
-- Performance compared to PostGIS and GeoPandas
+AI code generation has recognizable patterns — and many of them are anti-patterns. In geospatial React apps, AI loves to overuse useEffect for map state, create unnecessary re-renders with deck.gl layers, and generate components that don't clean up WebGL contexts. A debugging guide for code generated by AI.
+
+- The useEffect trap in map components
+- AI-generated deck.gl layer management issues
+- Context leaks and WebGL cleanup
+- When to accept AI output and when to rewrite
 
 ---
 
-## 9. Geospatial Development Workflow with Observable Notebooks
+## Geospatial Visualization
 
-Observable has become an underrated part of my geospatial toolkit. It's great for rapid prototyping of visualizations, sharing interactive maps, and teaching concepts. Over the years I've published 18 notebooks covering everything from COVID data to 3D buildings to hexagon visualizations.
+### 8. MapLibre + Deck.gl Camera Synchronization
 
-**What the article would cover:**
-- Why Observable for geospatial work
-- Importing and transforming geospatial data
-- Building interactive map components
-- Publishing and sharing notebooks
-- When to move from Observable to a production app
+**Mar 2025:** *"Working on map/app layouts as usual — experimenting with nice #tailwind drop shadows"* **Repo:** [`vite-map-deck`](https://github.com/eKerney/vite-map-deck)
+
+I built vite-map-deck as a starter template for projects that need both MapLibre GL JS vector tiles and deck.gl GPU layers. The hardest part is camera sync — MapLibre owns the viewport, deck.gl needs to track it. Multiple approaches exist (MapLibreAdapter, manual viewport) and the trade-offs aren't well documented anywhere.
+
+- Vite + React + TypeScript + TailwindCSS skeleton
+- Camera sync: MapLibreAdapter vs manual viewport tracking
+- When deck.gl adds value over MapLibre-native rendering
+- Performance profiling: which renderer for which layer type
+
+### 9. D3 geoOrthographic Pitfalls: The Missing .features Bug
+
+**Apr 2026:** *"and... a hour (ok more) spent debugging #d3js geoOrthographic due to missing .features in .data()"*
+
+A focused debugging story: why d3-geo's orthographic projection silently breaks when your GeoJSON doesn't have a .features array. The specific error, the confused hour of debugging, the pattern to avoid, and the check I now add to every D3 map.
+
+- The silent failure: .data() on a FeatureCollection vs GeometryCollection
+- d3-geo's expectations for input data structures
+- A utility function I now use to normalize input
+- The broader lesson: type-checking geospatial data before it hits D3
+
+### 10. Temporal Animated Maps with D3
+
+**Apr 2025:** *"It's a few years old though still some killer @d3js_org geo hacks from @currankelleher — Cheap Tricks for Interaction on a D3.js World Map"* **Observable:** [Michigan Covid Visualization](https://observablehq.com/@location-artistry/michigan-covid-visualization)
+
+D3's animation pipeline is powerful for geospatial storytelling. The COVID notebook showed day-by-day case progression with a synchronized map + timeline slider. Curran Kelleher's talk on D3 geo interaction hacks inspired some of the animation patterns I use.
+
+- D3 transition fundamentals for map elements
+- Synchronizing a timeline slider with choropleth transitions
+- Building legends that update between frames
+- Porting Curran's interaction patterns to temporal datasets
+
+### 11. Observable Notebooks to Astro Framework: Porting D3 Work
+
+**Mar 2025:** *"I really enjoy working in @observablehq for #D3js and spatial data prototyping, though the runtime and module loading quirks make utilizing the full functionality of #H3 challenging"*
+
+Observable is great for prototyping, but the runtime has real limitations — module loading quirks, H3 compatibility issues, no real deployment story. I've been porting my D3 notebooks to Astro/MDX for production use. The patterns for doing this cleanly aren't well documented.
+
+- Observable's runtime limitations for geospatial work
+- Extracting D3 code from Observable notebooks
+- Repackaging as Astro components with MDX
+- When to keep a notebook and when to build a page
 
 ---
 
-## 10. Esri Python API for ArcGIS Online Management
+## Spatial Data Engineering
 
-Presented at IMAGIN 2024. Managing an ArcGIS Online organization programmatically with the Esri Python API — user management, content migration, automated publishing, and webhook-based workflows.
+### 12. H3 Hex Grids Meet Machine Learning: Spatial Aggregation for AI
 
-**What the article would cover:**
-- Authentication and connecting to AGOL
-- Automating user and group management
-- Content lifecycle: publish, update, archive
-- Webhooks for real-time automation
-- CLI tools built on the Python API
+**May 2026:** *"Finally found a library that is using #h3geo to regionalize/aggregate spatial data for AI!"*
+
+A library using H3 to aggregate spatial data for machine learning — this is exactly the pattern I've been looking for. H3's hierarchical hex grid is a natural fit for converting irregular geospatial data into ML-ready uniform features. This would explore the intersection of H3 and AI/ML workflows.
+
+- Why H3 makes spatial data ML-ready
+- The library: how it aggregates point/raster data into H3 cells
+- Resolution selection for different ML tasks
+- Building a feature pipeline: raw data → H3 → model input
+
+### 13. STAC + COGs + FastAPI: A Production Imagery Pipeline
+
+**Mar 2025:** *"ChatGPT is building me a #Geospatial Imagery Pipeline utilizing Cloud-Optimized GeoTIFFs (#COGs) + #STAC + #FastAPI"* **Contributions to:** `Element84/terraform-aws-stac-server`, `stac-utils/stac-server`, `pystapi`
+
+The STAC ecosystem is the emerging standard for geospatial asset indexing, and I've contributed across the stack — Terraform deployments, Python clients, API extensions. This would be a practical walkthrough of a complete imagery pipeline.
+
+- What STAC + COGs solve for satellite/imagery data
+- Deploying a STAC server on AWS with Terraform
+- Building a FastAPI layer for query and delivery
+- The pystapi client pattern
+- Where the ecosystem is heading in 2026
+
+### 14. DuckDB Spatial SQL: Geospatial Data Prep Without PostGIS
+
+**Contributions to:** `duckdb/duckdb`
+
+DuckDB's spatial extension has become my go-to for geospatial ETL. Load GeoJSON, Parquet, Shapefiles, or GeoParquet and run spatial SQL instantly — no PostGIS setup needed. I've contributed to the project and use it daily for data prep before visualization.
+
+- Installing and enabling the spatial extension
+- Loading common formats: GeoJSON, Shapefile, GeoParquet
+- Spatial joins, buffering, containment queries
+- DuckDB vs PostGIS vs GeoPandas for different workloads
 
 ---
 
-That's the list for now. Some of these are close to publishable (the MapLibre + deck.gl piece, the H3 guide), others need more hands-on exploration first. I'll update this post as I make progress and add new ideas.
+## Open Source & Community
 
-If any of these resonate with you — or if there's a topic here you'd like to see sooner — let me know. Feedback helps me decide what to write next.
+### 15. Becoming a deck.gl Community Contributor
+
+**PR:** [#641](https://github.com/visgl/deck.gl-community/pull/641) — Cartesian coordinate support for draw-polygon-mode **Issues:** [#496](https://github.com/visgl/deck.gl-community/issues/496)
+
+My journey from deck.gl user to assigned contributor on a vis.gl project. Getting maintainers to assign issues, understanding the editable-layers architecture, writing geometric tests, and navigating the monorepo. A practical guide for anyone wanting to contribute to deck.gl.
+
+- How I got assigned to issues in deck.gl-community
+- Navigating the monorepo and editable-layers module
+- The edit mode plugin architecture
+- Writing tests for geometric algorithms
+- What the review process taught me
+
+### 16. awesome-geojson: A Tour of the Geospatial Open Source Ecosystem
+
+**Sep 2025:** *"If you haven't checked out the awesome-geojson repo yet, you really should and give @tmcw a shout. Every type of tool/cli/visualizer for working with geojson data you could imagine"*
+
+Tom MacWright's awesome-geojson repo is a curated index of every geospatial tool worth knowing. This article would be a guided tour — organized by workflow stage — for developers who don't know where to start in the geospatial OSS ecosystem.
+
+- Data generation and conversion tools
+- CLI utilities for geospatial exploration
+- Visualization libraries organized by use case
+- How I use these tools in my daily workflow
+- Finding your way in the ecosystem
+
+### 17. Rust + Jupyter: Can Rust Replace Python for Geospatial?
+
+**Oct 2025:** *"omg #rustlang has a #Jupyter kernel"*
+
+Rediscovering Rust through Jupyter notebooks. The Evcxr Rust Jupyter kernel makes interactive Rust possible, and Rust's performance and type safety are appealing for geospatial work. A first-impressions article: what works, what doesn't, and whether Rust is ready for geospatial data science.
+
+- Setting up Evcxr for Jupyter geospatial work
+- Rust's Geo crate ecosystem vs Python's GeoPandas
+- Performance comparison on common spatial operations
+- The ergonomic cost: is the speed worth the complexity?
+
+---
+
+## Practice & Process
+
+### 18. 30DayMapChallenge: A Geospatial Developer's Retrospective
+
+**22 mentions across the archive, including:** *"You know you're in the right place when the default is #vim keybindings — I'm looking at you bash man-ual cmd #30DayMapChallenge"*
+
+I've participated in the #30DayMapChallenge every year it's run — 22 tweets reference it. Each year I try different tools: one year D3, another year deck.gl, another year pure Python. A retrospective on what each approach taught me about geospatial visualization.
+
+- Year-by-year breakdown: tools, techniques, what I learned
+- Building a reusable prompt/map template system
+- Daily vs batch workflows for the challenge
+- Why the constraint of daily maps pushes better output
+
+### 19. USGS Water Data: From API to Observable Dashboard
+
+**Observable:** [USGS Water Gage Data 2025](https://observablehq.com/@location-artistry/usgs-water-gage-data-2025), [St Joseph River USGS Gage Explorer](https://observablehq.com/@location-artistry/st-joseph-river-usgs-gage-explorer) **Repos:** `water-data-auto`, `WATER-DATA-SERVER`
+
+A practical pipeline: fetching from the USGS NWIS API, storing time series, visualizing gage locations and historical data on an Observable dashboard. The St Joseph River is my local test case, but the patterns apply to any watershed.
+
+- NWIS API patterns and rate limiting
+- Timeseries storage with DuckDB vs Parquet files
+- Observable dashboard for real-time and historical views
+- Anomaly detection on gage data (flood event signatures)
+
+### 20. Air Quality Monitoring: PurpleAir, Backend Services, and Embedded Widgets
+
+**Repos:** [`PurpleAir_Sensor_Widget`](https://github.com/Location-Artistry/PurpleAir_Sensor_Widget), [`AirQualityDataServices`](https://github.com/Location-Artistry/AirQualityDataServices), [`anemowen`](https://github.com/Location-Artistry/anemowen)
+
+Full stack air quality monitoring for the Nottawaseppi Huron Band of the Potawatomi. PurpleAir sensors → backend data service → JavaScript widget → live map dashboard. Covers IoT geospatial data collection, API design, and frontend visualization.
+
+- PurpleAir sensor API and data format
+- Building a backend data service for sensor data
+- The JavaScript widget architecture
+- Real-time air quality mapping with deck.gl
+
+---
+
+That's twenty ideas drawn from 232 archived tweets, organized by what I actually reach for day to day. Top of my queue: the nvim + PostGIS workflow, the MCP server deep dive, and the MapLibre + deck.gl camera sync article. If any of these resonates — or if I'm missing something obvious from my own archive — let me know and I'll reshuffle.
