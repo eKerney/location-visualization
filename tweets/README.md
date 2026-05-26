@@ -25,6 +25,16 @@ The internal `core.GetUserTweets()` function (in `core/api.go:304`) **does** acc
 
 The `xsh search` command does paginate with `--pages`, but X's search index is time-limited (~7-14 days), so `from:LocationArtist --pages 50` still returns ≤20 tweets.
 
+### 3b. Environment Setup
+
+The Bearer token is stored in `.env` at the project root (already in `.gitignore`):
+
+```
+X_BEARER_TOKEN=
+```
+
+The script also checks `os.environ["X_BEARER_TOKEN"]` and falls back to searching parent directories for `.env`. This is a **public** token embedded in X.com's JavaScript — not a secret — but moved to `.env` to follow the principle of not hardcoding tokens in source files.
+
 ### 4. Solution: Direct GraphQL Pagination
 
 Wrote `xsh_paginate_user_tweets.py` — a Python script that:
@@ -95,7 +105,7 @@ Safety limit of 5,000 tweets built in to prevent runaway pagination if `has_more
 
 ### 8. ### 9. How This Works (Not a "Bypass")
 
-We are **not bypassing** X's API or paywall. We are using the **same internal GraphQL API that X.com's frontend uses**, served to logged-in browsers for free. The `Bearer` token (`AAAAAAAAAAAAAAAAAAAAANRILg...`) is hardcoded in X's own JavaScript bundle. The session cookies (`auth_token`, `ct0`) are what the web app sets in your browser after login.
+We are **not bypassing** X's API or paywall. We are using the **same internal GraphQL API that X.com's frontend uses**, served to logged-in browsers for free. The `Bearer` token (`AAAAAAAA...`) is hardcoded in X's own JavaScript bundle. The session cookies (`auth_token`, `ct0`) are what the web app sets in your browser after login.
 
 Both xsh and our Python script replay those credentials against the same endpoints the web client calls — equivalent to acting as a headless browser session. If X changes the bearer token or query IDs, it breaks (which is why xsh has auto-discovery for those).
 
