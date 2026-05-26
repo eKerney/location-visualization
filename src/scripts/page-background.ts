@@ -1,4 +1,5 @@
-import { AstroError } from "astro/errors";
+// NOTE: Intentionally not importing AstroError — this is a client script,
+// and astro/errors is a server-only module. Using plain Error instead.
 
 interface LetterPosition {
   x: number;
@@ -43,7 +44,7 @@ class PageBackground {
 
     // If either context is null, throw an error
     if(!baseCtx || !overlayCtx) {
-      throw new AstroError('Unable to get 2D context.');
+      throw new Error('Unable to get 2D context.');
     }
 
     this.baseCanvas = baseCanvas;
@@ -171,7 +172,7 @@ class PageBackground {
     const taken = new Array(len);
     
     if(n > len) {
-      throw new AstroError("getRandomAmountFromArray: more elements taken than available");
+      throw new Error("getRandomAmountFromArray: more elements taken than available");
     }
 
     while(n--) {

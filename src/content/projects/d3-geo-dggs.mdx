@@ -1,0 +1,36 @@
+---
+title: D3 Discrete Global Grid 
+date: 04-01-2026
+description: "Experimenting with d3-geo for 3D globe rendering, transforming Natural Earth polygons into H3 hexagons and A5 pentagons — no map library required."
+image: ../assets/hex_3D_clip.png
+info:
+  - text: GitHub
+    link: https://github.com/eKerney/d3geo-dggs
+    icon:
+      type: lucide
+      name: github
+  - text: Deploy
+    link: https://ekerney.github.io/d3geo-dggs/
+    icon:
+      type: lucide
+      name: cloud
+---
+
+
+## Try it out
+
+You can interact with the globe here: [https://ekerney.github.io/d3geo-dggs/](https://ekerney.github.io/d3geo-dggs/)
+
+Repo: [https://github.com/eKerney/d3geo-dggs](https://github.com/eKerney/d3geo-dggs)
+
+The hover effect turned out particularly well —  The app is built with React and TypeScript using Vite, and the globe rendering is all D3 SVG with some React state management for the UI controls.
+
+### What's next
+
+There's a lot I want to improve:
+
+- Better handling of anti-meridian edge cases where Turf's `pointInPolygon` disagrees with the visual polygon boundary
+- Smoother transitions between H3 and A5 views — maybe using a slider that interpolates between hexagon and pentagon resolutions
+- Adding more data layers on top of the hex/pentagon tiles, like population density or elevation tinting per cell
+- Performance optimization for higher H3 resolutions where the number of cells grows exponentially
+

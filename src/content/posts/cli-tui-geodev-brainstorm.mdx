@@ -1,0 +1,52 @@
+---
+title: "Brainstorming: CLI & TUI Tooling for Geospatial Devs"
+description: "Concept notes for a series on terminal-first geospatial development — neovim, PostGIS, psql, QGIS, terminal mail, and AI tooling."
+image: "../assets/globe_glow.png"
+createdAt: 05-25-2026
+draft: true
+tags:
+  - cli
+  - geoData
+  - ai
+  - contributions
+---
+
+## CLI & TUI Tools for the Geospatial Developer
+
+The terminal isn't just for running commands — it's a full development environment. Tools like `tmux`, `neovim`, `matcha` (terminal email), and `spotify_player` or `ncspot` (terminal music) replace GUI apps without leaving the keyboard. For geospatial work specifically, the payoff is huge: you can keep a PostGIS session open in one tmux pane, neovim in another, and psql output in a third, all without alt-tabbing.
+
+The key insight is that TUI tools reduce context switches. When you're deep in a geospatial analysis — debugging a spatial query, iterating on a D3 visualization, or exploring a new dataset — staying in the terminal means staying in flow. This article would survey the TUI landscape for geospatial devs: what works, what's flaky, and what's worth the setup time.
+
+## Terminal PostGIS Workflow: Neovim → psql → Output
+
+The core loop: write SQL in neovim, pipe it directly to psql, capture the output to a file or buffer for inspection. No IDE, no GUI query builder, no Jupyter — just `:w !psql -d mydb` or a tmux send-keys binding that pipes the current buffer to a psql pane.
+
+For spatial queries, this really shines. `ST_AsGeoJSON(ST_Transform(geom, 4326))` piped to a file you can open in geojson.io. `EXPLAIN ANALYZE` on a spatial join with the output in a side-by-side buffer. PostGIS has a REPL-friendly workflow that most people miss because they reach for pgAdmin or DBeaver first.
+
+This article would cover the specific neovim setup: keymaps for sending SQL to psql, named registers for query output, terminal buffers for persistent psql sessions, and how to handle spatial data types in the terminal (WKT output, GeoJSON conversion, ogr2ogr pipes).
+
+## Neovim, PostGIS, and QGIS: Three Tools, One Workflow
+
+QGIS is indispensable for visual validation, but it's terrible for repetitive query work. Neovim is great for writing and iterating queries, but can't render a map. The trick is using each for what it's good at: neovim for query development and version control, psql for execution, and QGIS for visual spot-checking.
+
+Concrete pattern: write and refine a complex spatial query in neovim, run it via psql to generate a GeoJSON file, then open that file in QGIS with a hotkey or script. Iterate. The QGIS Python console can even reload layers automatically when the source file changes.
+
+This article would focus on the glue — shell scripts, Makefiles, and tmux layouts that make the neovim → psql → QGIS loop fast. The less time spent moving data between tools, the more time spent actually solving spatial problems.
+
+## Terminal Tooling for GeoDevs
+
+A catalog of terminal tools that make geospatial work faster: `ogr2ogr` for format conversion, `tippecanoe` for vector tiles, `duckdb` with the spatial extension for quick analysis, `jq` for GeoJSON inspection, `gdalinfo` and `gdalsrsinfo` for metadata, `mdless` for previewing markdown docs, `fzf` for fuzzy-finding datasets, and `bat` for syntax-highlighted file inspection.
+
+The argument: most geospatial ETL and exploration doesn't need a GUI. A well-configured terminal with these tools handles 80% of data tasks faster than QGIS or ArcGIS Pro. The article would include aliases and functions that make common operations one-liners.
+
+## Going Full Terminal: Matcha, Vibez, and the TUI Life
+
+Moving email, music, and communication to the terminal. Matcha for email (imap/smtp TUI client), spotify_player or ncspot for music, tmux for session management, and neovim for everything text. The goal isn't purism — it's reducing the friction of switching contexts throughout the day.
+
+For geospatial devs specifically, terminal email means you can stay in your development environment while handling communication. No browser tab context switch, no electron app memory usage, just your terminal and your database. The article would cover the setup, the trade-offs, and why it works better for deep work than the browser-based alternative.
+
+## Archiving Twitter/X Data with opencode and Free AI Models
+
+A technical retrospective on this session: using opencode (running locally with free models) to install xsh, authenticate with X session cookies, discover the pagination gap in xsh's CLI, write a Python script that calls X's internal GraphQL API directly with cursor pagination, and archive 232 tweets spanning 2020–2026.
+
+The process was more about tool-building than data collection: reverse-engineering X's API from xsh's Go source, writing a paginator when the off-the-shelf tool didn't paginate, and combining results from two API endpoints (UserTweets and UserTweetsAndReplies) for maximum coverage. The article would focus on the problem-solving pattern — using an AI CLI to understand, extend, and work around the limitations of existing tools — rather than the Twitter API specifics.
